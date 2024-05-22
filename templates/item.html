@@ -1,0 +1,81 @@
+ {% extends "base.html" %}
+
+
+
+ {% block content %}
+
+ <div class="row" >
+    
+        <!--ใส่ที่อยู่ที่ต้องการแสดงรูป อย่าลืมใส่ /-->
+        <img src="/{{item['img']}}" height="10%"  />
+    
+</div>
+<br>
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{item['name']}}</h5>
+          <p class="card-text">{{item['desc']}}</p>
+          <a  data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-warning">Edit</a>
+          <a id="deleteButton" class="btn btn-danger">Delete</a>
+        </div>
+      </div>
+</div>
+<!--JQury เช็คปุ่ม deleteButton ถูกคลิกรึป่าว-->
+
+<script>
+$("#deleteButton").click(function(){
+    $.ajax({
+        type: 'DELETE',
+        url: '/delete/{{item["id"]}}',
+        success: function(res){
+            alert('Successfully delete item');
+            window.location = res
+        }
+    })
+
+});
+
+
+</script> 
+
+
+<!--สร้าง modal ในการedit สินค้า modal จะอยู่ตำแหน่งไหนก็ได้ในหน้า HTML ***อย่าลืมไปใส่เพิ่ม ตำแหน่งที่จะสร้างmodal ในปุ่มที่ต้องการด้วย-->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="EditModalLabel">Edit item</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+
+        <div class="modal-body">
+          <!--สร้าง form-->
+          <form action="{{url_for ('about_item', id=item['id'])}}" method="POST" enctype="multipart/form-data">
+            <!--เพิ่ม File img-->
+            <div class="mb-3"> 
+              <input class="form-control" type="file" id="file" name="file">
+            </div>
+            <!--เพิ่มชื่อ-->
+            <div class="mb-3">
+              <label for="name" class="col-form-label">Name :</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{item['name']}}">
+            </div>
+            <!--เพิ่มรายละเอียด-->
+            <div class="mb-3">
+              <label for="desc" class="col-form-label" >Description:</label>
+              <textarea class="form-control" id="desc" name="desc" value="{{item['desc']}}">{{item['desc']}}</textarea>
+            </div>
+             <!--เพิ่ม Close Save -->
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">Edit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ {% endblock content %}

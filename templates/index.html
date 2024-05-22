@@ -1,0 +1,116 @@
+<!--การสืบทอดของ flask ในหน้า Html-->
+{% extends "base.html" %}
+
+{% block  content %}
+<!--หัวข้อ-->
+<h1 class="display-1">items</h1>
+<!--ปุ่ม-->
+<div class="row">
+<div class="btn-group" role="group" aria-label="Basic outlined example">
+<!--เพิ่มcode ที่ต้องการใส่ modal-->
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button>
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">DELETE</button>
+    
+  </div>
+</div> 
+
+<!--การแสดงผล 3item ต่อแถว-->
+{% for row in items %}
+<div class="row">
+    {% for item in row %}
+    
+        <div class="col-md-4"  >
+            <div class="card">
+                <h5 class="card-header">Item : {{ item["name"] }}</h5>
+                 <div class="card-body text-center">
+                 <img src="{{item['img']}}" height="50%" width="50%">
+                 <p class="card-text">{{ item['desc'] }}</p>
+                 <a href="item/{{item['id']}}" class="btn btn-primary">Read more...</a>
+                </div>
+            </div>
+        </div>
+    
+    {% endfor %}
+</div>
+{% endfor %}
+
+<!--สร้าง modal ในการADD สินค้า modal จะอยู่ตำแหน่งไหนก็ได้ในหน้า HTML ***อย่าลืมไปใส่เพิ่ม ตำแหน่งที่จะสร้างmodal ในปุ่มที่ต้องการด้วย-->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addModalLabel">Add item</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+
+        <div class="modal-body">
+          <!--สร้าง form-->
+          <form action="{{url_for ('index')}}" method="POST" enctype="multipart/form-data">
+            <!--เพิ่ม File img-->
+            <div class="mb-3"> 
+              <input class="form-control" type="file" id="file" name="file">
+            </div>
+            <!--เพิ่มชื่อ-->
+            <div class="mb-3">
+              <label for="name" class="col-form-label">Name :</label>
+              <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <!--เพิ่มรายละเอียด-->
+            <div class="mb-3">
+              <label for="desc" class="col-form-label">Description:</label>
+              <textarea class="form-control" id="desc" name="desc"></textarea>
+            </div>
+             <!--เพิ่ม Close Save -->
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!--สร้าง modal ในการDEL สินค้า modal จะอยู่ตำแหน่งไหนก็ได้ในหน้า HTML ***อย่าลืมไปใส่เพิ่ม ตำแหน่งที่จะสร้างmodal ในปุ่มที่ต้องการด้วย-->
+<!--อย่าลืมเปลี่ยน ชื่อ ID-->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">Add item</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+
+      <div class="modal-body">
+        <!--สร้าง form-->
+        <form action="{{url_for('delete')}}" method="POST"  enctype="multipart/form-data">
+
+        
+                <select class="form-select" name="name" multiple aria-label="Multiple select example">
+                  <option selected>Select Item</option>
+                  <!--การแสดงผล-->
+                  {% for row in items %}
+                    {% for item in row %}
+                      <option value="{{item}}">{{item['name']}}</option>
+
+                    {% endfor %}
+                  {% endfor %}
+
+                </select>
+              
+            <!--เพิ่มปุ่ม close save-->
+          <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock  %}
